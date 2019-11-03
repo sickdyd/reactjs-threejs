@@ -5,6 +5,7 @@
   "dependencies": {
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
+    "react-gsap": "^1.2.0",
     "react-jss": "^10.0.0",
     "react-scripts": "3.2.0",
     "rsuite": "^4.0.5",
