@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
 
+import face from './textures/cat.jpg';
+
 //import {Button} from 'rsuite';
 import '../node_modules/rsuite/dist/styles/rsuite-default.css';
 
@@ -14,27 +16,56 @@ function App() {
   React.useEffect(()=>{
 
     var scene = new THREE.Scene();
+
+    const near = 0.1;
+    const far = 6.5;
+    const color = 'grey';
+    scene.fog = new THREE.Fog(color, near, far);
+    scene.background = new THREE.Color(color);
+
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
 
     var renderer = new THREE.WebGLRenderer({antialias: true});
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
     renderer.setClearColor("#000");
+    renderer.setSize( window.innerWidth, window.innerHeight );
 
     mount.appendChild( renderer.domElement );
 
-    /* var light = new THREE.AmbientLight({color: 0xffffff, intensity: 1});
-    light.position.set(0,0,25);
-    light.castShadow = true;
-    scene.add(light); */
+/*     var geometry = new THREE.BoxGeometry(1, 1, 1);
+    //var material = new THREE.MeshLambertMaterial({color: 0xF7F7F7});
 
-    var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    //var material = THREE.MeshBasicMaterial({ color: 0x999999, wireframe: true, transparent: true, opacity: 0.85 } )
+    const loader = new THREE.TextureLoader();
+     
+    const material = new THREE.MeshBasicMaterial({
+      map: loader.load('textures/cat.jpg'),
+    })
+
     var cube = new THREE.Mesh( geometry, material );
+    scene.add(cube); */
 
+    const boxWidth = 1;
+    const boxHeight = 1;
+    const boxDepth = 1;
+    const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+
+    const loader = new THREE.TextureLoader();
+
+    const material = new THREE.MeshBasicMaterial({
+      map: loader.load(face),
+    });
+    
+    const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
+
+    var light = new THREE.PointLight(0xFFFFFF, 1, 1000)
+    light.position.set(0,0,0);
+    scene.add(light);
+    
+    var light1 = new THREE.PointLight(0xFFFFFF, 2, 1000)
+    light1.position.set(0,0,25);
+    scene.add(light1);
 
     var raycaster = new THREE.Raycaster();
     var mouse = new THREE.Vector2();
@@ -56,6 +87,12 @@ function App() {
       }
     }
 
+    function onResize() {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    }
+
     var animate = function () {
       requestAnimationFrame( animate );
       cube.rotation.x += 0.01;
@@ -66,13 +103,17 @@ function App() {
     animate();
 
     window.addEventListener('click', onMouseClick);
+    window.addEventListener('resize', onResize);
 
-    window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth,window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
+    function cleanUp() {
+      window.removeEventListener('click', onMouseClick);
+      window.removeEventListener('click', onMouseClick);
+      geometry.dispose();
+      material.dispose();
+      scene.dispose();
+    }
 
-      camera.updateProjectionMatrix();
-    });
+    return cleanUp;
 
   });
 
