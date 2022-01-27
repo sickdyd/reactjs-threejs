@@ -9,7 +9,7 @@
     "react-jss": "^10.0.0",
     "react-scripts": "3.2.0",
     "rsuite": "^4.0.5",
-    "three": "^0.110.0"
+    "three": "^0.137.0"
   },
   "scripts": {
     "start": "react-scripts start",
